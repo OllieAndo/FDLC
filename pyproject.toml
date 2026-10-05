@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grid-brain"
+version = "0.1.0"
+description = "Agile Fault Detection & Classification (Possibly Restoration)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Oliver Anderson", email = "oliveranderson97@outlook.com" }
+]
+dependencies = [
+    "pandapower>=2.14.0",
+    "ortools>=9.5.0",
+    "torch>=2.0.0",
+    "torch-geometric>=2.3.0",
+    "numpy>=1.22.0",
+    "scipy>=1.8.0",
+    "matplotlib>=3.5.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
