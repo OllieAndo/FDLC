@@ -1,4 +1,4 @@
-Markdown
+
 # Grid Fault Identification and Restoration Research
 
 Research repository for investigating Agile Fault Detection & Classification (Possibly Restoration) using ELM's, XGBoost, CNN's and Graph Neural Network (GNN) architectures for agile fault identification, classification.
@@ -25,7 +25,7 @@ grid-brain/
 ├── pyproject.toml         # Dependency management and package configuration
 └── README.md
 Core Tech Stack
-Power System Simulation: Pandapower (Newton-Raphson power flow calculations)
+Power System Simulation: Pandapower (Newton-Raphson power flow calculations), Matlab x Simulink for the node level stages.
 
 Graph Deep Learning: PyTorch & PyTorch Geometric (Spatial-temporal network modeling)
 
