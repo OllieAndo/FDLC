@@ -1,44 +1,71 @@
-Markdown
-# Grid Fault Identification and Restoration Research
+# FDLC: Fault Detection, Classification & Localisation in DER-rich distribution grids
 
-Research repository for investigating Agile Fault Detection & Classification (Possibly Restoration) using ELM's, XGBoost, CNN's and Graph Neural Network (GNN) architectures for agile fault identification, classification.
-Possibly extending to fault restoration where Decomposition Architectures could be used.
+PhD research code for MSCA DC10 *Agile node-level fault detection and classification*
+(SAILING Doctoral Network, IREC / UPC).
 
-## Research Overview
+## Research overview
 
-Modern electrical distribution grids face increasing operational complexity with high penetration of distributed energy resources. Traditional protection and restoration schemes rely on rigid rule-based logic or static heuristics. This repository contains the experimental framework for developing data-driven, topology-aware models that perform:
-1. **Agile Fault Identification & Classification:** Utilising ML models for edge detection and spatial-temporal GNNs to rapidly classify, and localise anomalies across distribution networks.
-2. **Optimal Service Restoration:** Formulating MILP-based optimization models (via OR-Tools/SCIP) constrained by network radiality and thermal limits to generate safe switching sequences.
+Inverter-based resources (IBRs) limit fault current and respond according to their control
+software, not just network impedance. This breaks the assumptions behind classical overcurrent
+protection and fault passage indicators. FDLC builds a tiered, data-driven pipeline that
+explicitly differentiates fault behaviour by **asset class** (IBR, rotating, static):
 
-## Repository Structure
+| Tier | Task | Candidate methods |
+|---|---|---|
+| 1 | Lightweight edge **detection** | Echo State Network, Isolation Forest, ELM (online-adaptable baselines) |
+| 2 | Explainable **classification** per asset class | 1D-CNN + SHAP |
+| 3 | System-level **localisation** (stretch) | Topology-aware GNN, optionally travelling-wave physics loss |
+
+Cross-cutting evaluation criteria: reliability (calibration, OOD / abstention), transferability
+(unseen grids and control strategies) and drift (DER growth, reconfiguration).
+
+## Pipeline
 
 ```text
-grid-brain/
-├── data/                  # Raw grid topologies (IEEE test cases) and simulated datasets
-├── notebooks/             # Exploratory analysis and simulation notebooks
-├── src/                   # Core research codebase
-│   ├── environment/       # Pandapower wrapper and network topology extraction
-│   ├── models/            # PyTorch Geometric GNN architectures
-│   ├── optimisation/      # MILP restoration and constraints formulation
-│   └── utils/             # Evaluation metrics and configuration utilities
-├── tests/                 # Unit tests for physics verification and constraint validation
-├── pyproject.toml         # Dependency management and package configuration
-└── README.md
-Core Tech Stack
-Power System Simulation: Pandapower (Newton-Raphson power flow calculations)
+grid (SimBench / IEEE 33, 123) -> VeraGrid EMT/RMS fault scenarios -> node waveforms
+    -> features -> Tier 1 / 2 / 3 models -> explanation -> evaluation
+```
 
-Graph Deep Learning: PyTorch & PyTorch Geometric (Spatial-temporal network modeling)
+## Repository structure
 
-Mathematical Optimization: Google OR-Tools (MILP/CP-SAT solvers for topology optimization)
+```text
+FDLC/
+├── data/                     # not tracked: raw grids, simulated waveforms, processed sets
+├── notebooks/                # exploration
+├── scripts/                  # runnable experiments (e.g. emt_slg_fault.py)
+├── src/fdlc/
+│   ├── simulation/           # VeraGrid grid building, fault scenario generation
+│   ├── features/             # sequence components, Clarke transform, wavelets
+│   ├── models/
+│   │   ├── tier1/            # edge detectors
+│   │   ├── tier2/            # asset-class classifiers
+│   │   └── tier3/            # GNN localisation
+│   ├── explain/              # SHAP and physics consistency checks
+│   ├── eval/                 # metrics, calibration, transfer / drift experiments
+│   └── utils/
+├── tests/
+└── pyproject.toml
+```
 
-Installation
-Clone the repository:
+## Stack
 
-Bash
-git clone [https://github.com/your-username/grid-brain.git](https://github.com/your-username/grid-brain.git)
-cd grid-brain
-Development Setup
-Install the package in editable mode along with dependencies:
+- Simulation: [VeraGrid](https://veragrid.readthedocs.io/) (RMS + EMT), pandapower / SimBench for grid data and static cross-checks
+- ML: PyTorch, scikit-learn, SHAP; PyTorch Geometric for Tier 3 (optional extra)
+- Validation reference: MATLAB/Simulink
 
-Bash
-pip install -e .
+## Setup
+
+Python 3.12 recommended.
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -e ".[dev]"         # add ,gnn for PyTorch Geometric
+pytest
+python scripts/emt_slg_fault.py
+```
+
+## Status and licence
+
+Early-stage research code. All rights reserved; no licence is granted to use, copy or
+redistribute. IP terms are subject to the IREC / SAILING agreements.

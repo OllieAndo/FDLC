@@ -3,25 +3,34 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "grid-brain"
+name = "fdlc"
 version = "0.1.0"
-description = "Agile Fault Detection & Classification (Possibly Restoration)"
+description = "Tiered fault detection, classification and localisation in DER-rich distribution grids"
 readme = "README.md"
-requires-python = ">=3.10"
-license = { text = "MIT" }
+requires-python = ">=3.11"
 authors = [
     { name = "Oliver Anderson", email = "oliveranderson97@outlook.com" }
 ]
+classifiers = ["Private :: Do Not Upload"]
 dependencies = [
+    "veragridengine>=6.8",
     "pandapower>=2.14.0",
-    "ortools>=9.5.0",
-    "torch>=2.0.0",
-    "torch-geometric>=2.3.0",
-    "numpy>=1.22.0",
-    "scipy>=1.8.0",
-    "matplotlib>=3.5.0"
+    "simbench>=1.5",
+    "numpy>=2.2",
+    "scipy>=1.10",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "torch>=2.2",
+    "shap>=0.45",
+    "matplotlib>=3.8",
 ]
+
+[project.optional-dependencies]
+gnn = ["torch-geometric>=2.5"]
+dev = ["pytest>=8", "ruff>=0.5", "jupyterlab>=4"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
